@@ -1,0 +1,2 @@
+$brightness = $(xbacklight)
+echo $brightness
