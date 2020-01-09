@@ -15,8 +15,9 @@ export ZSH="/home/metamehta/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME=powerlevel10k/powerlevel10k
 
+SPACESHIP_TIME_SHOW=true
+SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
@@ -85,7 +86,7 @@ plugins=(git
 	 emoji-clock
 	 lol
 	 zsh-256color
-	 ls
+	 git-open
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -116,7 +117,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias listlinks='colorls -la --color | grep "\->"'
-alias python=python3
+alias py3=python3.7
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -125,15 +126,30 @@ alias acad='cd ~/Academic'
 alias q='exit'
 alias update='sudo apt-get update && sudo apt-get upgrade'
 alias nis='npm install --save'
-alias l='colorls -la'
 alias dl='cd  ~/Downloads'
 alias ms='cd ~/CS/Misc'
-alias i3='cd ~/.i3'
+alias i3c='cd ~/.i3'
 alias gitpass='xclip -selection clipboard /home/metamehta/.gitpass'
 alias python=python3
-alias pip=pip3
-alias ls=colorls
+alias pip3=pip3.7
+alias clk='tty-clock -b -c -C 1'
+alias vi=vim
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source $(dirname $(gem which colorls))/tab_complete.sh
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+. /home/metamehta/.local/lib/python3.8/site-packages/powerline/bindings/zsh/powerline.zsh
+
+export http_proxy="http://172.16.2.30:8080/"
+export ftp_proxy="ftp://172.16.2.30:8080/"
+export rsync_proxy="rsync://172.16.2.30:8080/"
+export no_proxy="localhost, 10.*.*.*"
+export HTTP_PROXY="http://172.16.2.30:8080/"
+export FTP_PROXY="ftp://172.16.2.30:8080/"
+export RSYNC_PROXY="rsync://172.16.2.30:8080/"
+export NO_PROXY="localhost, 10.*.*.*"
+export https_proxy="http://172.16.2.30:8080/"
+export HTTPS_PROXY="http://172.16.2.30:8080/"
