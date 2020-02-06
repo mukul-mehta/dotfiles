@@ -4,7 +4,7 @@
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
+neofetch
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -76,7 +76,7 @@ SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git
+oplugins=(git
 	 colored-man-pages
 	 colorize
 	 python
@@ -116,7 +116,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias listlinks='colorls -la --color | grep "\->"'
 alias py3=python3.7
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -132,24 +131,39 @@ alias i3c='cd ~/.i3'
 alias gitpass='xclip -selection clipboard /home/metamehta/.gitpass'
 alias python=python3
 alias pip3=pip3.7
-alias clk='tty-clock -b -c -C 1'
+alias clk='tty-clock -b -c -C 2'
 alias vi=vim
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-source $(dirname $(gem which colorls))/tab_complete.sh
 source ~/powerlevel10k/powerlevel10k.zsh-theme
-. /home/metamehta/.local/lib/python3.8/site-packages/powerline/bindings/zsh/powerline.zsh
+source ~/.scripts/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+
+# export http=proxy=172.16.2.30:8080
+
+lfcd () {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp"
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+bindkey -s '^o' 'lfcd\n'
+
+export PATH="$PATH:/home/$USER/.scripts/flutter/bin"
+export PAGER="most"
 
 export http_proxy="http://172.16.2.30:8080/"
 export ftp_proxy="ftp://172.16.2.30:8080/"
 export rsync_proxy="rsync://172.16.2.30:8080/"
-export no_proxy="localhost, 10.*.*.*"
+export no_proxy="localhost,10.*.*.*"
 export HTTP_PROXY="http://172.16.2.30:8080/"
 export FTP_PROXY="ftp://172.16.2.30:8080/"
 export RSYNC_PROXY="rsync://172.16.2.30:8080/"
-export NO_PROXY="localhost, 10.*.*.*"
+export NO_PROXY="localhost,10.*.*.*"
 export https_proxy="http://172.16.2.30:8080/"
 export HTTPS_PROXY="http://172.16.2.30:8080/"
