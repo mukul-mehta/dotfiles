@@ -1,0 +1,87 @@
+import:
+    - "/Users/mukul-mehta/CS/dotfiles/alacritty/colours.yml"
+
+env:
+  # TERM variable
+  #
+  # This value is used to set the `$TERM` environment variable for
+  # each instance of Alacritty. If it is not present, alacritty will
+  # check the local terminfo database and use `alacritty` if it is
+  # available, otherwise `xterm-256color` is used.
+  TERM: xterm-256color
+
+window:
+  # Window dimensions (changes require restart)
+  #
+  # Number of lines/columns (not pixels) in the terminal. The number of columns
+  # must be at least `2`, while using a value of `0` for columns and lines will
+  # fall back to the window manager's recommended size.
+  dimensions:
+   columns: 100
+   lines: 36
+
+  # Window padding (changes require restart)
+  #
+  # Blank space added around the window in pixels. This padding is scaled
+  # by DPI and the specified value is always added at both opposing sides.
+  padding:
+   x: 0
+   y: 0
+
+  # Spread additional padding evenly around the terminal content.
+  dynamic_padding: true
+
+  # Window decorations
+  #
+  # Values for `decorations`:
+  #     - full: Borders and title bar
+  #     - none: Neither borders nor title bar
+  #
+  # Values for `decorations` (macOS only):
+  #     - transparent: Title bar, transparent background and title bar buttons
+  #     - buttonless: Title bar, transparent background and no title bar buttons
+  decorations: none
+
+  # Startup Mode (changes require restart)
+  #
+  # Values for `startup_mode`:
+  #   - Windowed
+  #   - Maximized
+  #   - Fullscreen
+  #
+  # Values for `startup_mode` (macOS only):
+  #   - SimpleFullscreen
+  #startup_mode: Windowed
+
+  # Window title
+  #title: Alacritty
+
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
+
+
+# Font configuration
+draw_bold_text_with_bright_colors: true
+font:
+    normal:
+        family: JetBrainsMono Nerd Font
+        style: Regular
+    bold:
+        family: JetBrainsMono Nerd Font
+        style: Bold
+    italic:
+        family: JetBrainsMono Nerd Font
+        style: Italic
+
+    # Point size of the font
+    size: 15
+
+# Live config reload (changes require restart)
+live_config_reload: true
+
+# The value `0.0` is completely transparent and `1.0` is opaque.
+background_opacity: 0.93
+
+
+shell:
+ program: /usr/local/bin/zsh
