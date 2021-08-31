@@ -125,6 +125,21 @@ function init_nvm() {
 	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 }
 
+# Kill process
+function kp() {
+	FZF_DEFAULT_COMMAND='ps -erf' \
+	fzf --bind 'ctrl-r:reload(ps -erf)' \
+		--header 'Press Ctrl + R to Reload' \
+		--header-lines=1 --multi --height=50% \
+		--layout=reverse | awk '{print $2}' | xargs kill -9
+}
+
+# List open ports with netstat
+function listening(){
+    netstat -Watnlv | grep LISTEN | \
+    awk '{"ps -o comm= -p " $9 | getline procname;colred="\033[01;31m";colclr="\033[0m"; print colred "proto: " colclr $1 colred " | addr.port: " colclr $4 colred " | pid: " colclr $9 colred " | name: " colclr procname;  }' | column -t -s "|" | sort
+}
+
 # Go specific settings
 export GOPATH=$HOME/go
 export GOROOT=/usr/local/opt/go/libexec
