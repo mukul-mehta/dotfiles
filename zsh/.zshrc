@@ -1,4 +1,4 @@
-__shell_start=`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`
+# __shell_start=`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`
 if [ -x /usr/libexec/path_helper ]; then
   eval `/usr/libexec/path_helper -s`
 fi
