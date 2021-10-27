@@ -1,7 +1,9 @@
-# __shell_start=`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`
+__shell_start=`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`
 if [ -x /usr/libexec/path_helper ]; then
   eval `/usr/libexec/path_helper -s`
 fi
+
+export DOTFILES_ROOT="$HOME/CS/dotfiles"
 
 # ~/.zshrc file for zsh non-login shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
@@ -52,41 +54,6 @@ setopt hist_ignore_space      # ignore commands that start with space
 setopt hist_verify            # show command with history expansion to user before running it
 setopt share_history          # share command history data
 
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias cs="cd ~/CS"
-alias acad="cd ~/Academic"
-alias dl="cd ~/Downloads"
-alias bd="cd ~/Random/Software"
-alias q='exit'
-
-if type tty-clock &>/dev/null; then
-  alias clk='tty-clock -b -c -C 2'
-fi
-
-
-if type lsd &>/dev/null; then
-	alias ls="lsd --group-dirs first"
-	alias tree="lsd --tree"
-fi
-
-if type bat &>/dev/null;then
-	alias cat="bat"
-elif type batcat &>/dev/null;then
-	alias cat="batcat"
-fi
-
-if type tmux &>/dev/null;then
-	alias t="tmux"
-	alias ta="t a -t"
-	alias tls="t ls"
-	alias tn="t new -t"
-fi
-
-alias code="code-insiders"
-alias ms="cd ~/CS/Misc"
-alias dc="docker-compose"
 
 # enable syntax-highlighting
 if [ -f ~/.scripts/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
@@ -113,11 +80,10 @@ export EDITOR="vim"
 export LC_ALL=en_US.UTF-8
 
 # Enable pyenv and friends
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+	export PYENV_ROOT="$HOME/.pyenv"
+	export PATH="$PYENV_ROOT/bin:$PATH"
+	eval "$(pyenv init --path)"
+	eval "$(pyenv virtualenv-init -)"
 
 # Enable NVM and source completions
 function init_nvm() {
@@ -152,6 +118,7 @@ export GPG_TTY=$(tty)
 # enable Starship prompt
 eval "$(starship init zsh)"
 
+autoload bashcompinit && bashcompinit
 # enable completion features
 autoload -Uz compinit
 if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.cache/zcompdump) ]; then
@@ -159,6 +126,25 @@ if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.cache/
 else
   compinit -d ~/.cache/zcompdump -C
 fi
+complete -C /usr/local/aws-cli/aws_completer aws
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/completion.zsh.inc'; fi
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+export NVS_HOME="$HOME/.nvs"
+[ -s "$NVS_HOME/nvs.sh" ] && . "$NVS_HOME/nvs.sh"
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"
+eval "$(zoxide init zsh)"
+
+# Source aliases
+. "$DOTFILES_ROOT/zsh/aliases.zsh"
 
 if [[ -v __shell_start ]]; then
   echo -e "\nLoading personal and system profiles took $((`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`-__shell_start))ms."

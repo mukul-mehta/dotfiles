@@ -5,6 +5,7 @@
 
 [core]
     editor = vim
+	excludesFile = ~/.config/git/gitignore
 
 [filter "lfs"]
     clean = git-lfs clean -- %f

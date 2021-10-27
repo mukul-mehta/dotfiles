@@ -4,17 +4,16 @@ format = """\
   $username\
   $shell\
   $directory\
-  $package\
-  $python\
   $git_branch\
   $git_commit\
   $git_state\
   $git_status\
-  $cmd_duration\
   $line_break\
-  $jobs\
   $character\
   """
+
+
+right_format = """$python"""
 
 [battery]
 full_symbol = "•"
@@ -44,7 +43,7 @@ style = "italic cyan"
 format = "\\[$indicator\\] at "
 powershell_indicator = "[pwsh](bold blue)"
 bash_indicator = "[bash](bold blue)"
-unknown_indicator = "[cmd](bold blue)"
+zsh_indicator = "[zsh](bold blue)"
 disabled = false
 
 [directory]
@@ -106,7 +105,6 @@ symbol = " "
 
 [python]
 symbol = " "
-pyenv_version_name = true
 
 [rust]
 symbol = " "
