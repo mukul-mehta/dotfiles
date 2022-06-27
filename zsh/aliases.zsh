@@ -39,4 +39,13 @@ fi
 alias code="code-insiders"
 alias dc="docker-compose"
 
+alias gl="git log"
+alias gsm="git switch main"
+alias grm="git rebase main"
+alias grc="git rebase --continue"
+
+alias y="yarn"
+alias yd="yarn dev"
+alias yl="yarn local"
+alias ynx="yarn nx run"
 alias ys="yarn start"

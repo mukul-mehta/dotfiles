@@ -1,4 +1,4 @@
-__shell_start=`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`
+__shell_start=`/usr/local/Cellar/coreutils/9.1/bin/gdate +%s%3N`
 if [ -x /usr/libexec/path_helper ]; then
   eval `/usr/libexec/path_helper -s`
 fi
@@ -146,6 +146,14 @@ eval "$(zoxide init zsh)"
 # Source aliases
 . "$DOTFILES_ROOT/zsh/aliases.zsh"
 
-if [[ -v __shell_start ]]; then
-  echo -e "\nLoading personal and system profiles took $((`/usr/local/Cellar/coreutils/8.32/bin/gdate +%s%3N`-__shell_start))ms."
+# Source Private Env if exists
+if [ -f '/Users/mukul-mehta/.env.private' ]; then
+	. '/Users/mukul-mehta/.env.private'
 fi
+
+if [[ -v __shell_start ]]; then
+  echo -e "\nLoading personal and system profiles took $((`/usr/local/Cellar/coreutils/9.1/bin/gdate +%s%3N`-__shell_start))ms."
+fi
+export DENO_INSTALL="/Users/mukul-mehta/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+export PATH=$PATH:/Users/mukul-mehta/.spicetify
