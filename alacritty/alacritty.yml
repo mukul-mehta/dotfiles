@@ -19,7 +19,7 @@ window:
   dimensions:
    columns: 100
    lines: 36
-
+  opacity: 0.93
   # Window padding (changes require restart)
   #
   # Blank space added around the window in pixels. This padding is scaled
@@ -80,7 +80,6 @@ font:
 live_config_reload: true
 
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.93
 
 
 shell:

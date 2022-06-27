@@ -1,7 +1,7 @@
 [user]
-    email = "hello@mukul-mehta.in"
+    email = "mukul@workduck.io"
     name = "Mukul Mehta"
-	signingkey = 0693C409
+	signingkey = 3259F089C4338D2B 
 
 [core]
     editor = vim
