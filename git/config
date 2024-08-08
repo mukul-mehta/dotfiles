@@ -1,7 +1,6 @@
 [user]
-    email = "mukul@workduck.io"
+    email = "work@mukul-mehta.in"
     name = "Mukul Mehta"
-	signingkey = 3259F089C4338D2B 
 
 [core]
     editor = vim
@@ -12,11 +11,6 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
-
-[commit]
-    gpgSign = true
-[tag]
-    gpgSign = true
 
 [init]
     defaultBranch = main

@@ -1,8 +1,9 @@
-__shell_start=`/usr/local/Cellar/coreutils/9.1/bin/gdate +%s%3N`
+__shell_start=`/usr/local/bin/gdate +%s%3N`
 if [ -x /usr/libexec/path_helper ]; then
   eval `/usr/libexec/path_helper -s`
 fi
 
+fpath+=~/.zfunc/
 export DOTFILES_ROOT="$HOME/CS/dotfiles"
 
 # ~/.zshrc file for zsh non-login shells.
@@ -79,12 +80,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export EDITOR="vim"
 export LC_ALL=en_US.UTF-8
 
-# Enable pyenv and friends
-	export PYENV_ROOT="$HOME/.pyenv"
-	export PATH="$PYENV_ROOT/bin:$PATH"
-	eval "$(pyenv init --path)"
-	eval "$(pyenv virtualenv-init -)"
-
 # Enable NVM and source completions
 function init_nvm() {
 	export NVM_DIR=~/.nvm
@@ -129,12 +124,6 @@ fi
 complete -C /usr/local/aws-cli/aws_completer aws
 
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mukul-mehta/Random/Software/ZIP+TGZs/google-cloud-sdk/completion.zsh.inc'; fi
-
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 export NVS_HOME="$HOME/.nvs"
@@ -151,9 +140,26 @@ if [ -f '/Users/mukul-mehta/.env.private' ]; then
 	. '/Users/mukul-mehta/.env.private'
 fi
 
-if [[ -v __shell_start ]]; then
-  echo -e "\nLoading personal and system profiles took $((`/usr/local/Cellar/coreutils/9.1/bin/gdate +%s%3N`-__shell_start))ms."
-fi
-export DENO_INSTALL="/Users/mukul-mehta/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH=$PATH:/Users/mukul-mehta/.spicetify
+export PATH="/usr/local/opt/postgresql@15/bin:$PATH"
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/mukul-mehta/Software/ZIPs/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/mukul-mehta/Software/ZIPs/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/mukul-mehta/Software/ZIPs/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/mukul-mehta/Software/ZIPs/google-cloud-sdk/completion.zsh.inc'; fi
+
+eval "$(direnv hook zsh)"
+
+export PATH="$PATH:$HOME/.cargo/bin"
+if [[ -v __shell_start ]]; then
+  echo -e "\nLoading personal and system profiles took $((`/usr/local/bin/gdate +%s%3N`-__shell_start))ms."
+fi
+
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv virtualenv-init -)"
