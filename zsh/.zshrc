@@ -4,7 +4,7 @@ if [ -x /usr/libexec/path_helper ]; then
 fi
 
 fpath+=~/.zfunc/
-export DOTFILES_ROOT="$HOME/CS/dotfiles"
+export DOTFILES_ROOT="$HOME/Personal/dotfiles"
 
 # ~/.zshrc file for zsh non-login shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
@@ -163,3 +163,14 @@ export PATH="/usr/local/opt/mysql-client/bin:$PATH"
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# pnpm
+export PNPM_HOME="/Users/mukul-mehta/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+export PATH="/usr/local/opt/postgresql@16/bin:$PATH"

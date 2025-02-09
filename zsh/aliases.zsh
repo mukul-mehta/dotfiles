@@ -2,11 +2,11 @@
 alias ..='z ..'
 alias ...='z ../..'
 alias ....='z ../../..'
-alias cs="z ~/CS"
+alias cs="z ~/Personal"
 alias acad="z ~/Academic"
 alias dl="z ~/Downloads"
 alias bd="z ~/Random/Software"
-alias ms="cd ~/CS/Misc"
+alias ms="cd ~/Personal/Misc"
 
 alias q='exit'
 alias k="kubectl"

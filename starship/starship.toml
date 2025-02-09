@@ -1,5 +1,4 @@
 format = """\
-  $battery\
   $time\
   $username\
   $shell\
@@ -14,25 +13,6 @@ format = """\
 
 
 right_format = """$python"""
-
-[battery]
-full_symbol = "•"
-discharging_symbol = ""
-charging_symbol = ""
-unknown_symbol = "!"
-format = "[$symbol$percentage]($style) "
-
-[[battery.display]]
-threshold = 20
-style = "italic red"
-
-[[battery.display]]
-threshold = 80
-style = "italic green"
-
-[[battery.display]]
-threshold = 100
-style = "italic yellow"
 
 [time]
 disabled = false
