@@ -1,0 +1,202 @@
+.shell "/bin/sh"
+
+
+# =============================================================================
+# Keyboard
+# =============================================================================
+
+.device external {
+    vendor  : 0x05AC
+    product : 0x024F
+}
+
+.device builtin {
+    vendor  : 0x0000
+    product : 0x0000
+}
+
+# =============================================================================
+# Caps Lock window-management layer
+# =============================================================================
+
+:: wm @
+
+.remap caps_lock [device external] {
+    tap             : f20
+    hold            : wm
+    timeout         : 150ms
+    permissive_hold : on
+    retro_tap       : off
+}
+
+.remap caps_lock [device builtin] {
+    tap             : f20
+    hold            : wm
+    timeout         : 150ms
+    permissive_hold : on
+    retro_tap       : off
+}
+
+
+# =============================================================================
+# Display-local spaces
+#
+# Caps + 1…8         Focus space
+# Caps + Shift + 1…8 Move window to space and follow it
+# =============================================================================
+
+wm < 1 : "$HOME/.config/yabai/wm.sh" focus-space 1
+wm < 2 : "$HOME/.config/yabai/wm.sh" focus-space 2
+wm < 3 : "$HOME/.config/yabai/wm.sh" focus-space 3
+wm < 4 : "$HOME/.config/yabai/wm.sh" focus-space 4
+wm < 5 : "$HOME/.config/yabai/wm.sh" focus-space 5
+wm < 6 : "$HOME/.config/yabai/wm.sh" focus-space 6
+wm < 7 : "$HOME/.config/yabai/wm.sh" focus-space 7
+wm < 8 : "$HOME/.config/yabai/wm.sh" focus-space 8
+wm < 9 : "$HOME/.config/yabai/wm.sh" focus-space 9
+wm < 0 : "$HOME/.config/yabai/wm.sh" focus-space 10
+
+
+wm < shift - 1 : "$HOME/.config/yabai/wm.sh" move-space 1
+wm < shift - 2 : "$HOME/.config/yabai/wm.sh" move-space 2
+wm < shift - 3 : "$HOME/.config/yabai/wm.sh" move-space 3
+wm < shift - 4 : "$HOME/.config/yabai/wm.sh" move-space 4
+wm < shift - 5 : "$HOME/.config/yabai/wm.sh" move-space 5
+wm < shift - 6 : "$HOME/.config/yabai/wm.sh" move-space 6
+wm < shift - 7 : "$HOME/.config/yabai/wm.sh" move-space 7
+wm < shift - 8 : "$HOME/.config/yabai/wm.sh" move-space 8
+wm < shift - 9 : "$HOME/.config/yabai/wm.sh" move-space 9
+wm < shift - 0 : "$HOME/.config/yabai/wm.sh" move-space 10
+
+# Previous / next space
+wm < p : "$HOME/.config/yabai/wm.sh" focus-relative-space prev
+wm < n : "$HOME/.config/yabai/wm.sh" focus-relative-space next
+
+wm < shift - p : "$HOME/.config/yabai/wm.sh" move-relative-space prev
+wm < shift - n : "$HOME/.config/yabai/wm.sh" move-relative-space next
+
+
+# =============================================================================
+# Focus windows
+#
+# Caps + H/J/K/L
+# =============================================================================
+
+wm < h : "$HOME/.config/yabai/wm.sh" focus west
+wm < j : "$HOME/.config/yabai/wm.sh" focus south
+wm < k : "$HOME/.config/yabai/wm.sh" focus north
+wm < l : "$HOME/.config/yabai/wm.sh" focus east
+
+wm < home : yabai -m window --focus first
+wm < end  : yabai -m window --focus last
+
+
+# =============================================================================
+# Move / warp windows
+#
+# Caps + Shift + H/J/K/L
+#
+# wm.sh first warps within the current BSP tree, then moves to an adjacent
+# display when the window is already at the display edge.
+# =============================================================================
+
+wm < shift - h : "$HOME/.config/yabai/wm.sh" move west
+wm < shift - j : "$HOME/.config/yabai/wm.sh" move south
+wm < shift - k : "$HOME/.config/yabai/wm.sh" move north
+wm < shift - l : "$HOME/.config/yabai/wm.sh" move east
+
+
+# =============================================================================
+# Resize windows
+#
+# Caps + Ctrl + H/J/K/L
+# =============================================================================
+
+wm < ctrl - h : yabai -m window --resize right:-80:0  || yabai -m window --resize left:-80:0
+wm < ctrl - j : yabai -m window --resize bottom:0:80  || yabai -m window --resize top:0:80
+wm < ctrl - k : yabai -m window --resize bottom:0:-80 || yabai -m window --resize top:0:-80
+wm < ctrl - l : yabai -m window --resize right:80:0   || yabai -m window --resize left:80:0
+
+
+# =============================================================================
+# Stack windows
+#
+# Caps + Alt + H/J/K/L  Stack with neighbour
+# Caps + Alt + N/P      Cycle stack
+# =============================================================================
+
+wm < alt - h : "$HOME/.config/yabai/wm.sh" stack west
+wm < alt - j : "$HOME/.config/yabai/wm.sh" stack south
+wm < alt - k : "$HOME/.config/yabai/wm.sh" stack north
+wm < alt - l : "$HOME/.config/yabai/wm.sh" stack east
+
+wm < alt - n : yabai -m window --focus stack.next
+wm < alt - p : yabai -m window --focus stack.prev
+
+
+# =============================================================================
+# Insertion direction
+#
+# Sets where the next managed window will be inserted.
+#
+# Caps + Cmd + H/J/K/L
+# Caps + Cmd + S          Insert as stack
+# =============================================================================
+
+wm < cmd - h : yabai -m window --insert west
+wm < cmd - j : yabai -m window --insert south
+wm < cmd - k : yabai -m window --insert north
+wm < cmd - l : yabai -m window --insert east
+wm < cmd - s : yabai -m window --insert stack
+
+
+# =============================================================================
+# Window state
+# =============================================================================
+
+# Float / tile
+wm < space : yabai -m window --toggle float
+
+# Zoom within the BSP parent
+wm < f : yabai -m window --toggle zoom-parent
+
+# Fill the current space without entering native macOS fullscreen
+wm < shift - f : yabai -m window --toggle zoom-fullscreen
+
+# Toggle the current window's split direction
+wm < s : yabai -m window --toggle split
+
+
+# =============================================================================
+# Space layout
+# =============================================================================
+
+# Equalise window sizes
+wm < e : yabai -m space --balance
+
+# Toggle padding and gaps together
+wm < g : yabai -m space --toggle padding; yabai -m space --toggle gap
+
+# Transform BSP tree
+wm < x : yabai -m space --mirror x-axis
+wm < y : yabai -m space --mirror y-axis
+wm < r : yabai -m space --rotate 90
+
+
+# =============================================================================
+# Open a new application window with an insertion direction
+#
+# Caps + O         Insert east, then Cmd-N
+# Caps + Shift + O Insert south, then Cmd-N
+# =============================================================================
+
+wm < o : yabai -m window --insert east 2>/dev/null || true; skhd -k "cmd - n"
+
+wm < shift - o : yabai -m window --insert south 2>/dev/null || true; skhd -k "cmd - n"
+
+
+# =============================================================================
+# SketchyBar
+# =============================================================================
+
+wm < b : "$HOME/.config/yabai/wm.sh" toggle-bar

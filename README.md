@@ -1,11 +1,21 @@
 # Dotfiles
 
-Configuration for the tools I most commonly use.
+Configuration for the tools I use day to day.
 
-Each folder consists of configuration for that specific tool. I symlink these to the correct location to keep all of the configuration in one place (this repository)
+Each folder contains configuration for a specific tool. `install.sh` installs the minimal Homebrew bundle, recreates generated plugin dependencies, backs up any existing target files, and symlinks the tracked config into place.
 
+## Install
 
-### TODOs
+```sh
+./install.sh
+```
 
-- [ ] Add Install Script - Either a bash script or use Ansible
-- [ ] Add configuration for VSCode, iTerm2 ands other apps
+Useful flags:
+
+```sh
+./install.sh --dry-run
+./install.sh --no-brew
+./install.sh --no-services
+```
+
+Backups are written to `~/.dotfiles-backup/<timestamp>`.

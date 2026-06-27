@@ -1,0 +1,115 @@
+// One-line tab bar on top and mode-aware status bar on bottom.
+default_layout "default"
+
+theme "catppuccin-mocha"
+
+pane_frames true
+
+ui {
+    pane_frames {
+        rounded_corners true
+    }
+}
+
+auto_layout true
+
+mouse_mode true
+advanced_mouse_actions true
+
+scroll_buffer_size 50000
+
+scrollback_editor "nvim"
+
+session_serialization true
+
+pane_viewport_serialization true
+
+// serialized sessions excessively large.
+scrollback_lines_to_serialize 2000
+
+show_startup_tips true
+show_release_notes true
+
+plugins {
+    room location="file:~/.local/share/zellij/plugins/room.wasm" {
+        ignore_case true
+        quick_jump true
+    }
+
+    forgot location="file:~/.local/share/zellij/plugins/zellij_forgot.wasm" {
+        "LOAD_ZELLIJ_BINDINGS" "true"
+    }
+
+    zjstatus location="file:~/.local/share/zellij/plugins/zjstatus.wasm" {
+        // Overall placement
+        format_left   "{mode} #[fg=#89b4fa,bold] {session} #[fg=#585b70]│ {command_git}"
+        format_center ""
+        format_right  "{command_cpu}{command_ram}{datetime}"
+        format_space  "#[bg=#1e1e2e]"
+
+        format_hide_on_overlength "true"
+        format_precedence         "lrc"
+
+        border_enabled "false"
+
+        // Catppuccin Mocha mode indicators
+        mode_normal       "#[fg=#1e1e2e,bg=#a6e3a1,bold] {name} "
+        mode_locked       "#[fg=#1e1e2e,bg=#f38ba8,bold] {name} "
+        mode_resize       "#[fg=#1e1e2e,bg=#f9e2af,bold] {name} "
+        mode_pane         "#[fg=#1e1e2e,bg=#89b4fa,bold] {name} "
+        mode_tab          "#[fg=#1e1e2e,bg=#cba6f7,bold] {name} "
+        mode_scroll       "#[fg=#1e1e2e,bg=#fab387,bold] {name} "
+        mode_enter_search "#[fg=#1e1e2e,bg=#fab387,bold] {name} "
+        mode_search       "#[fg=#1e1e2e,bg=#fab387,bold] {name} "
+        mode_rename_tab   "#[fg=#1e1e2e,bg=#f9e2af,bold] {name} "
+        mode_rename_pane  "#[fg=#1e1e2e,bg=#f9e2af,bold] {name} "
+        mode_session      "#[fg=#1e1e2e,bg=#89b4fa,bold] {name} "
+        mode_move         "#[fg=#1e1e2e,bg=#a6e3a1,bold] {name} "
+        mode_prompt       "#[fg=#1e1e2e,bg=#f38ba8,bold] {name} "
+        mode_tmux         "#[fg=#1e1e2e,bg=#7f849c,bold] {name} "
+        mode_default_to_mode "normal"
+
+        // Git branch
+        command_git_command     "/bin/zsh -c \"$HOME/.config/zellij/scripts/git.sh\""
+        command_git_format      "#[fg=#a6e3a1]{stdout} "
+        command_git_interval    "10"
+        command_git_rendermode  "static"
+
+        // CPU
+        command_cpu_command     "/bin/zsh -c \"$HOME/.config/zellij/scripts/cpu.sh\""
+        command_cpu_format      "#[fg=#89b4fa]CPU {stdout} #[fg=#585b70]│ "
+        command_cpu_interval    "5"
+        command_cpu_rendermode  "static"
+
+        // RAM
+        command_ram_command     "/bin/zsh -c \"$HOME/.config/zellij/scripts/ram.sh\""
+        command_ram_format      "#[fg=#cba6f7]RAM {stdout} #[fg=#585b70]│ "
+        command_ram_interval    "10"
+        command_ram_rendermode  "static"
+
+        // Clock
+        datetime          "#[fg=#f9e2af] {format} "
+        datetime_format   "%a %d %b  %H:%M"
+        datetime_timezone "Asia/Kolkata"
+    }
+}
+
+keybinds {
+    shared_except "locked" {
+        // Fuzzy tab switcher
+        bind "Alt r" {
+            LaunchOrFocusPlugin "room" {
+                floating true
+                move_to_focused_tab true
+            }
+        }
+
+        // Searchable keybinding reference
+        bind "Alt Shift f" {
+            LaunchOrFocusPlugin "forgot" {
+                floating true
+                move_to_focused_tab true
+            }
+        }
+    }
+}

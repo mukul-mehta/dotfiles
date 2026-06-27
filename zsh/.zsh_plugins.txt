@@ -1,0 +1,36 @@
+# ~/.zsh_plugins.txt — managed by antidote (https://antidote.sh)
+# Rebuild after editing:  antidote load   (or it auto-rebuilds on next shell)
+ 
+# ---------------------------------------------------------------------------
+# compinit management — MUST be first.
+# Runs compinit at the right moment so that fpath/completion plugins below are
+# registered, and widget-wrapping plugins (fzf-tab, autosuggestions, F-Sy-H)
+# hook in correctly. Replaces the hand-rolled cached-compinit block.
+# ---------------------------------------------------------------------------
+mattmc3/ez-compinit
+ 
+# Extra completion definitions (adds to fpath, picked up by compinit above)
+zsh-users/zsh-completions kind:fpath
+ 
+# ---------------------------------------------------------------------------
+# fzf-powered tab-completion menu — replaces the plain `menu select` list.
+# Type `git switch <tab>` / `cd <tab>` / `kill <tab>` → interactive fzf picker.
+# Must load after compinit (handled by ez-compinit) and before the widget
+# wrappers below.
+# ---------------------------------------------------------------------------
+Aloxaf/fzf-tab
+ 
+# Ghost-text suggestions from history + completion (kept — still the standard)
+zsh-users/zsh-autosuggestions
+ 
+# fish-style abbreviations: `abbr gco='git checkout'` expands inline as you type
+# (optional — comment out if you prefer plain aliases)
+olets/zsh-abbr
+ 
+# ---------------------------------------------------------------------------
+# Syntax highlighting — MODERN REPLACEMENT for zsh-syntax-highlighting.
+# Faster, more accurate, themeable. Note: F-Sy-H ignores the old
+# ZSH_HIGHLIGHT_HIGHLIGHTERS variable, so that line was dropped from .zshrc.
+# Keep this LAST.
+# ---------------------------------------------------------------------------
+zdharma-continuum/fast-syntax-highlighting kind:defer

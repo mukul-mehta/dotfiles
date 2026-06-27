@@ -1,0 +1,528 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+source "$CONFIG_DIR/settings.sh"
+source "$CONFIG_DIR/colors.sh"
+
+sketchybar --remove '/.*/' >/dev/null 2>&1 || true
+
+sketchybar --bar \
+  position=top \
+  height="$BAR_HEIGHT" \
+  margin="$BAR_MARGIN" \
+  y_offset="$BAR_Y_OFFSET" \
+  color="$TRANSPARENT" \
+  shadow=off \
+  sticky=on \
+  topmost=window \
+  font_smoothing=on \
+  padding_left=3 \
+  padding_right=3 \
+  notch_width=210
+
+sketchybar --default \
+  icon.font="$METRIC_FONT:Bold:16.5" \
+  icon.color="$TEXT" \
+  label.font="$METRIC_FONT:Bold:16.5" \
+  label.color="$TEXT" \
+  display=1 \
+  padding_left=0 \
+  padding_right=0
+
+# ---------------------------------------------------------------------------
+# Workspace island
+# ---------------------------------------------------------------------------
+space_members=()
+
+sketchybar --add item spaces.pad.left left \
+  --set spaces.pad.left icon.drawing=off label.drawing=off width=9
+space_members+=("spaces.pad.left")
+
+for sid in $(seq 1 "$SPACE_COUNT"); do
+  sketchybar --add item "space.$sid" left \
+    --set "space.$sid" \
+      icon="$sid" \
+      icon.font="$METRIC_FONT:Bold:18.0" \
+      icon.color="$SUBTEXT" \
+      icon.padding_left=11 \
+      icon.padding_right=9 \
+      label="" \
+      label.font="$APP_FONT:Regular:19.0" \
+      label.color="$TEXT" \
+      label.padding_left=0 \
+      label.padding_right=10 \
+      label.y_offset=-1 \
+      background.drawing=off \
+      background.height="$ACTIVE_SPACE_HEIGHT" \
+      background.corner_radius=9 \
+      background.color="$BLUE_BG" \
+      padding_left=2 \
+      padding_right=2 \
+      click_script="yabai -m space --focus $sid"
+
+  space_members+=("space.$sid")
+
+  if (( sid < SPACE_COUNT )); then
+    sketchybar --add item "space.gap.$sid" left \
+      --set "space.gap.$sid" icon.drawing=off label.drawing=off width=4
+    space_members+=("space.gap.$sid")
+  fi
+done
+
+sketchybar --add item spaces.pad.right left \
+  --set spaces.pad.right icon.drawing=off label.drawing=off width=9
+space_members+=("spaces.pad.right")
+
+sketchybar --add bracket spaces.island "${space_members[@]}" \
+  --set spaces.island \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$ISLAND_BG_SPACES" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER"
+
+sketchybar --add item spaces.observer left \
+  --set spaces.observer \
+    drawing=off \
+    update_freq=60 \
+    script="$PLUGIN_DIR/spaces.sh" \
+  --subscribe spaces.observer \
+    front_app_switched \
+    space_change \
+    space_windows_change \
+    display_change \
+    system_woke
+
+# ---------------------------------------------------------------------------
+# Media island
+# ---------------------------------------------------------------------------
+sketchybar --add event media_refresh
+
+sketchybar --add item media.previous center \
+  --set media.previous \
+    icon="󰒮" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$TEAL" \
+    icon.padding_left=12 \
+    icon.padding_right=9 \
+    label.drawing=off \
+    click_script="nowplaying-cli previous >/dev/null 2>&1; sleep 0.2; sketchybar --trigger media_refresh"
+
+sketchybar --add item media.artwork center \
+  --set media.artwork \
+    width=32 \
+    icon="󰎈" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$TEXT" \
+    icon.align=center \
+    icon.padding_left=0 \
+    icon.padding_right=0 \
+    label.drawing=off \
+    background.drawing=on \
+    background.height=32 \
+    background.corner_radius=7 \
+    background.color="$MEDIA_FALLBACK" \
+    background.image.drawing=off \
+    background.image.scale=0.58 \
+    background.image.corner_radius=7
+
+sketchybar --add item media.text center \
+  --set media.text \
+    icon.drawing=off \
+    label="Nothing playing" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$TEXT" \
+    label.max_chars=34 \
+    label.padding_left=13 \
+    label.padding_right=13 \
+    label.y_offset=-1
+
+sketchybar --add item media.play center \
+  --set media.play \
+    icon="󰐊" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$TEXT" \
+    icon.padding_left=9 \
+    icon.padding_right=9 \
+    icon.background.drawing=on \
+    icon.background.height=31 \
+    icon.background.corner_radius=8 \
+    icon.background.color="$TEAL_BG" \
+    label.drawing=off \
+    click_script="nowplaying-cli togglePlayPause >/dev/null 2>&1; sleep 0.2; sketchybar --trigger media_refresh"
+
+sketchybar --add item media.next center \
+  --set media.next \
+    icon="󰒭" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$TEAL" \
+    icon.padding_left=9 \
+    icon.padding_right=12 \
+    label.drawing=off \
+    click_script="nowplaying-cli next >/dev/null 2>&1; sleep 0.2; sketchybar --trigger media_refresh"
+
+sketchybar --add bracket media.island \
+    media.previous media.artwork media.text media.play media.next \
+  --set media.island \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$ISLAND_BG_MEDIA" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER"
+
+sketchybar --add item media.observer center \
+  --set media.observer \
+    drawing=off \
+    update_freq=5 \
+    script="$PLUGIN_DIR/media.sh" \
+  --subscribe media.observer media_refresh system_woke
+
+sketchybar --add item media.notch.pad center \
+  --set media.notch.pad icon.drawing=off label.drawing=off width=0
+
+sketchybar --add item notch.observer center \
+  --set notch.observer drawing=off \
+    script="$PLUGIN_DIR/notch.sh" \
+  --subscribe notch.observer system_woke
+
+# Reload the bar when display count changes. display.sh checks if the count
+# actually changed before reloading to prevent loops.
+sketchybar --add item display.observer center \
+  --set display.observer drawing=off \
+    script="$PLUGIN_DIR/display.sh" \
+  --subscribe display.observer display_change
+
+# ---------------------------------------------------------------------------
+# Clock island
+# ---------------------------------------------------------------------------
+sketchybar --add item clock.time right \
+  --set clock.time \
+    icon.drawing=off \
+    label="--:--" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$CLOCK" \
+    label.padding_left=8 \
+    label.padding_right=13 \
+    update_freq=30 \
+    script="$PLUGIN_DIR/clock.sh" \
+    click_script="open -a Calendar"
+
+sketchybar --add item clock.date right \
+  --set clock.date \
+    icon.drawing=off \
+    label="--- -- ---" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$TEXT" \
+    label.padding_left=13 \
+    label.padding_right=8 \
+    click_script="open -a Calendar"
+
+sketchybar --add bracket clock.island clock.date clock.time \
+  --set clock.island \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$ISLAND_BG_CLOCK" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER"
+
+sketchybar --add item clock.gap right \
+  --set clock.gap icon.drawing=off label.drawing=off width=7
+
+# ---------------------------------------------------------------------------
+# Weather pill
+# ---------------------------------------------------------------------------
+sketchybar --add item weather right \
+  --set weather \
+    icon="󰖐" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$WEATHER" \
+    icon.padding_left=12 \
+    icon.padding_right=7 \
+    label="--" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$TEXT" \
+    label.padding_left=0 \
+    label.padding_right=12 \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$ISLAND_BG_WEATHER" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER" \
+    popup.align=center \
+    popup.height=30 \
+    popup.y_offset=8 \
+    popup.background.color="$ISLAND_BG_WEATHER" \
+    popup.background.corner_radius=11 \
+    popup.background.border_width=0 \
+    popup.background.shadow.drawing=on \
+    popup.background.shadow.color=0x66000000 \
+    popup.background.shadow.angle=90 \
+    popup.background.shadow.distance=4 \
+    update_freq=600 \
+    script="$PLUGIN_DIR/weather.sh" \
+  --subscribe weather mouse.clicked mouse.exited.global system_woke
+
+for row in location condition feels lohi humidity rain; do
+  sketchybar --add item "weather.popup.$row" popup.weather \
+    --set "weather.popup.$row" \
+      icon="$(tr '[:lower:]' '[:upper:]' <<<"${row:0:1}")${row:1}" \
+      icon.font="$METRIC_FONT:Semibold:14.0" \
+      icon.color="$MUTED" \
+      icon.width=74 \
+      icon.align=left \
+      icon.padding_left=14 \
+      icon.padding_right=4 \
+      label="—" \
+      label.font="$METRIC_FONT:Bold:14.0" \
+      label.color="$TEXT" \
+      label.width=150 \
+      label.align=left \
+      label.max_chars=24 \
+      label.padding_left=0 \
+      label.padding_right=14
+done
+
+sketchybar --set weather.popup.location icon="City" \
+           --set weather.popup.condition icon="Now" \
+           --set weather.popup.feels icon="Feels" \
+           --set weather.popup.lohi icon="Lo/Hi" \
+           --set weather.popup.rain icon="Rain"
+
+sketchybar --add item weather.popup.open popup.weather \
+  --set weather.popup.open \
+    icon="" \
+    icon.font="$ICON_FONT:Bold:14.0" \
+    icon.color="$WEATHER" \
+    icon.padding_left=14 \
+    icon.padding_right=8 \
+    label="Open wttr.in" \
+    label.font="$METRIC_FONT:Bold:14.0" \
+    label.color="$WEATHER" \
+    label.padding_left=0 \
+    label.padding_right=14 \
+    width=256 \
+    background.drawing=on \
+    background.height=27 \
+    background.corner_radius=8 \
+    background.color="$PEACH_BG" \
+    click_script="open 'https://wttr.in/${WEATHER_LOCATION:-Bengaluru}'; sketchybar --set weather popup.drawing=off"
+
+sketchybar --add item weather.gap right \
+  --set weather.gap icon.drawing=off label.drawing=off width=7
+
+# ---------------------------------------------------------------------------
+# Focus pill (standalone)
+# ---------------------------------------------------------------------------
+sketchybar --add item focus right \
+  --set focus \
+    icon="󰒲" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$MUTED" \
+    icon.padding_left=12 \
+    icon.padding_right=12 \
+    label.drawing=off \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$ISLAND_BG_STATUS" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER" \
+    update_freq=15 \
+    script="$PLUGIN_DIR/focus.sh" \
+    click_script="open 'x-apple.systempreferences:com.apple.Focus-Settings.extension'" \
+  --subscribe focus system_woke
+
+sketchybar --add item focus.gap right \
+  --set focus.gap icon.drawing=off label.drawing=off width=7
+
+# ---------------------------------------------------------------------------
+# Status island (Tailscale + WiFi + Volume + Battery)
+# ---------------------------------------------------------------------------
+sketchybar --add item tailscale right \
+  --set tailscale \
+    icon="󰭫" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$TEXT" \
+    icon.padding_left=12 \
+    icon.padding_right=12 \
+    label.drawing=off \
+    update_freq=30 \
+    script="$PLUGIN_DIR/tailscale.sh" \
+    click_script="open -a Tailscale" \
+  --subscribe tailscale system_woke
+
+sketchybar --add item status.sep.1 right \
+  --set status.sep.1 \
+    icon.drawing=off label.drawing=off width=1 \
+    background.drawing=on background.color="$DIVIDER" background.height=18
+
+sketchybar --add item wifi right \
+  --set wifi \
+    icon="󰖩" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$WIFI" \
+    icon.padding_left=12 \
+    icon.padding_right=12 \
+    label.drawing=off \
+    update_freq=120 \
+    script="$PLUGIN_DIR/wifi.sh" \
+    popup.align=center \
+    popup.height=30 \
+    popup.y_offset=8 \
+    popup.background.color="$ISLAND_BG_CONN" \
+    popup.background.corner_radius=11 \
+    popup.background.border_width=0 \
+    popup.background.shadow.drawing=on \
+    popup.background.shadow.color=0x66000000 \
+    popup.background.shadow.angle=90 \
+    popup.background.shadow.distance=4 \
+  --subscribe wifi mouse.clicked mouse.exited.global wifi_change system_woke
+
+for row in network interface ipv4 router dns mac; do
+  sketchybar --add item "wifi.popup.$row" popup.wifi \
+    --set "wifi.popup.$row" \
+      icon="$(tr '[:lower:]' '[:upper:]' <<<"${row:0:1}")${row:1}" \
+      icon.font="$METRIC_FONT:Semibold:14.0" \
+      icon.color="$MUTED" \
+      icon.width=76 \
+      icon.align=left \
+      icon.padding_left=14 \
+      icon.padding_right=4 \
+      label="—" \
+      label.font="$METRIC_FONT:Bold:14.0" \
+      label.color="$TEXT" \
+      label.width=150 \
+      label.align=left \
+      label.max_chars=22 \
+      label.padding_left=0 \
+      label.padding_right=14
+done
+
+sketchybar --set wifi.popup.ipv4 icon="IPv4" \
+           --set wifi.popup.dns icon="DNS" \
+           --set wifi.popup.mac icon="MAC"
+
+sketchybar --add item wifi.popup.settings popup.wifi \
+  --set wifi.popup.settings \
+    icon="" \
+    icon.font="$ICON_FONT:Bold:14.0" \
+    icon.color="$BLUE" \
+    icon.padding_left=14 \
+    icon.padding_right=8 \
+    label="Open Wi-Fi Settings" \
+    label.font="$METRIC_FONT:Bold:14.0" \
+    label.color="$BLUE" \
+    label.padding_left=0 \
+    label.padding_right=14 \
+    width=258 \
+    background.drawing=on \
+    background.height=27 \
+    background.corner_radius=8 \
+    background.color="$BLUE_BG" \
+    click_script="open 'x-apple.systempreferences:com.apple.WiFi-Settings.extension'; sketchybar --set wifi popup.drawing=off"
+
+sketchybar --add item connection.sep.2 right \
+  --set connection.sep.2 \
+    icon.drawing=off label.drawing=off width=1 \
+    background.drawing=on background.color="$DIVIDER" background.height=18
+
+sketchybar --add item volume right \
+  --set volume \
+    icon="󰕾" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$VOLUME" \
+    icon.padding_left=10 \
+    icon.padding_right=4 \
+    label="--%" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$TEXT" \
+    label.padding_left=0 \
+    label.padding_right=10 \
+    update_freq=5 \
+    script="$PLUGIN_DIR/volume.sh" \
+  --subscribe volume mouse.clicked mouse.scrolled system_woke
+
+sketchybar --add item connection.sep.3 right \
+  --set connection.sep.3 \
+    icon.drawing=off label.drawing=off width=1 \
+    background.drawing=on background.color="$DIVIDER" background.height=18
+
+sketchybar --add item battery right \
+  --set battery \
+    icon="" \
+    icon.font="$ICON_FONT:Bold:16.5" \
+    icon.color="$BATTERY" \
+    icon.padding_left=10 \
+    icon.padding_right=6 \
+    label="--%" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$TEXT" \
+    label.padding_left=0 \
+    label.padding_right=12 \
+    update_freq=60 \
+    script="$PLUGIN_DIR/battery.sh" \
+  --subscribe battery power_source_change system_woke
+
+sketchybar --add bracket status.island \
+    tailscale status.sep.1 wifi connection.sep.2 volume connection.sep.3 battery \
+  --set status.island \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$ISLAND_BG_CONN" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER"
+
+sketchybar --add item performance.gap right \
+  --set performance.gap icon.drawing=off label.drawing=off width=7
+
+# ---------------------------------------------------------------------------
+# CPU + RAM
+# ---------------------------------------------------------------------------
+sketchybar --add item performance right \
+  --set performance \
+    icon=" --%" \
+    icon.font="$METRIC_FONT:Bold:16.5" \
+    icon.color="$CPU" \
+    icon.padding_left=12 \
+    icon.padding_right=10 \
+    label="󰍛 --%" \
+    label.font="$METRIC_FONT:Bold:16.5" \
+    label.color="$RAM" \
+    label.padding_left=10 \
+    label.padding_right=12 \
+    background.drawing=on \
+    background.height="$ISLAND_HEIGHT" \
+    background.corner_radius=12 \
+    background.color="$PERFORMANCE_BG" \
+    background.border_width=1 \
+    background.border_color="$ISLAND_BORDER" \
+    update_freq=3 \
+    script="$PLUGIN_DIR/performance.sh" \
+    click_script="open -a 'Activity Monitor'" \
+  --subscribe performance system_woke
+
+# ---------------------------------------------------------------------------
+# Immediate first paint.
+# ---------------------------------------------------------------------------
+"$PLUGIN_DIR/spaces.sh"
+NAME=media.observer "$PLUGIN_DIR/media.sh"
+NAME=performance "$PLUGIN_DIR/performance.sh"
+NAME=volume "$PLUGIN_DIR/volume.sh"
+NAME=wifi "$PLUGIN_DIR/wifi.sh"
+NAME=battery "$PLUGIN_DIR/battery.sh"
+NAME=focus "$PLUGIN_DIR/focus.sh"
+NAME=tailscale "$PLUGIN_DIR/tailscale.sh"
+NAME=weather "$PLUGIN_DIR/weather.sh"
+NAME=clock.time "$PLUGIN_DIR/clock.sh"
+"$PLUGIN_DIR/notch.sh"
+
+sketchybar --update

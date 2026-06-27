@@ -91,3 +91,5 @@
     zero-style = syntax
 [gpg]
 	program = /usr/local/bin/gpg
+[credential]
+	helper = osxkeychain
